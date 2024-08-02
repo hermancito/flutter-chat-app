@@ -92,7 +92,14 @@ class __FormState extends State<_Form> {
             keyboardType: TextInputType.text,
             isPassword: true,
           ),
-          ElevatedButton(child: const Text('Enviar'), onPressed: () {}),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor:  Colors.blueAccent,
+              shadowColor: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+            ), 
+            child: const Text('Enviar'), 
+            onPressed: () {}),
         ],
       ),
     );
