@@ -15,11 +15,11 @@ class _ChatPageState extends State<ChatPage> {
   final _textController = TextEditingController();
   final _focusNode = FocusNode();
   bool _estaEscribiendo = false;
-  List<ChatMessage> _messages = [
-    ChatMessage(texto: 'Hola Herman', uid: '123'),
-    ChatMessage(texto: 'Probando mensajes míos', uid: '123'),
-    ChatMessage(texto: 'Probando mensajes de otros', uid: '155'),
-    ChatMessage(texto: 'xxxxxxx', uid: '155'),
+  final List<ChatMessage> _messages = [
+    const ChatMessage(texto: 'Hola Herman', uid: '123'),
+    const ChatMessage(texto: 'Probando mensajes míos', uid: '123'),
+    const ChatMessage(texto: 'Probando mensajes de otros', uid: '155'),
+    const ChatMessage(texto: 'xxxxxxx', uid: '155'),
   ];
 
   @override
@@ -88,10 +88,10 @@ class _ChatPageState extends State<ChatPage> {
           margin: const EdgeInsets.symmetric(horizontal: 4.0),
           child: Platform.isIOS
               ? CupertinoButton(
-                  child: const Text('Enviar'),
                   onPressed: _estaEscribiendo
                       ? () => _handleSubmit(_textController.text)
                       : null,
+                  child: const Text('Enviar'),
                 )
               : Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4.0),

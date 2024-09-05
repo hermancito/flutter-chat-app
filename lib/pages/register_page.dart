@@ -1,8 +1,13 @@
+import 'package:chat/helpers/mostrar_alerta.dart';
+import 'package:chat/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/custom_input.dart';
 
 class RegisterPage extends StatelessWidget {
+  const RegisterPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,15 +15,15 @@ class RegisterPage extends StatelessWidget {
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.9,
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const _Logo(),
+                  _Logo(),
                   _Form(),
-                  const _Labels(),
-                  const Text('Terminos y condiciones de uso',
+                  _Labels(),
+                  Text('Terminos y condiciones de uso',
                       style: TextStyle(fontWeight: FontWeight.w200))
                 ],
               ),
@@ -29,9 +34,7 @@ class RegisterPage extends StatelessWidget {
 }
 
 class _Logo extends StatelessWidget {
-  const _Logo({
-    super.key,
-  });
+  const _Logo();
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +60,7 @@ class _Logo extends StatelessWidget {
 }
 
 class _Form extends StatefulWidget {
-  _Form({Key? key}) : super(key: key);
+  const _Form({Key? key}) : super(key: key);
 
   @override
   State<_Form> createState() => __FormState();
@@ -70,6 +73,7 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -93,13 +97,28 @@ class __FormState extends State<_Form> {
             isPassword: true,
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor:  Colors.blueAccent,
-              shadowColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-            ), 
-            child: const Text('Enviar'), 
-            onPressed: () {}),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                shadowColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+              child: const Text('Enviar'),
+              onPressed: authService.autenticando
+                  ? null
+                  : () async {
+                      final registroOk = await authService.register(
+                          nameController.text.trim(),
+                          emailController.text.trim(),
+                          passController.text.trim());
+
+                      if (registroOk == true) {
+                        // Conectar a socket server y navegar
+                        Navigator.pushReplacementNamed(context, 'usuarios');
+                      } else {
+                        mostrarAlerta(
+                            context, 'Registro incorrecto', registroOk);
+                      }
+                    }),
         ],
       ),
     );

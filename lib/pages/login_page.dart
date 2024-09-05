@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../helpers/mostrar_alerta.dart';
+import '../services/auth_service.dart';
 import '../widgets/custom_input.dart';
 
 class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,15 +15,15 @@ class LoginPage extends StatelessWidget {
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.9,
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const _Logo(),
+                  _Logo(),
                   _Form(),
-                  const _Labels(),
-                  const Text('Terminos y condiciones de uso',
+                  _Labels(),
+                  Text('Terminos y condiciones de uso',
                       style: TextStyle(fontWeight: FontWeight.w200))
                 ],
               ),
@@ -29,9 +34,7 @@ class LoginPage extends StatelessWidget {
 }
 
 class _Logo extends StatelessWidget {
-  const _Logo({
-    super.key,
-  });
+  const _Logo();
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +60,7 @@ class _Logo extends StatelessWidget {
 }
 
 class _Form extends StatefulWidget {
-  _Form({Key? key}) : super(key: key);
+  const _Form({Key? key}) : super(key: key);
 
   @override
   State<_Form> createState() => __FormState();
@@ -69,6 +72,7 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -87,13 +91,28 @@ class __FormState extends State<_Form> {
             isPassword: true,
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor:  Colors.blueAccent,
-              shadowColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-            ), 
-            onPressed: () {},
-            child: const Text('Login')),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                shadowColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+              onPressed: authService.autenticando
+                  ? null
+                  : () async {
+                      FocusScope.of(context).unfocus();
+                      final loginOk = await authService.login(
+                          emailController.text.trim(),
+                          passController.text.trim());
+                      if (loginOk) {
+                        // navegamos a otra pantalla
+                        Navigator.pushReplacementNamed(context, 'usuarios');
+                      } else {
+                        // ignore: use_build_context_synchronously
+                        mostrarAlerta(context, 'Login incorrecto',
+                            'Revise sus credenciales de acceso');
+                      }
+                    },
+              child: const Text('Login')),
         ],
       ),
     );
