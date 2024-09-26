@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../helpers/mostrar_alerta.dart';
 import '../services/auth_service.dart';
+import '../services/socket_service.dart';
 import '../widgets/custom_input.dart';
 
 class LoginPage extends StatelessWidget {
@@ -73,6 +74,8 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
+
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -104,7 +107,7 @@ class __FormState extends State<_Form> {
                           emailController.text.trim(),
                           passController.text.trim());
                       if (loginOk) {
-                        // navegamos a otra pantalla
+                        socketService.connect();
                         Navigator.pushReplacementNamed(context, 'usuarios');
                       } else {
                         // ignore: use_build_context_synchronously

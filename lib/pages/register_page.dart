@@ -3,6 +3,7 @@ import 'package:chat/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../services/socket_service.dart';
 import '../widgets/custom_input.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -73,7 +74,10 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
+
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -112,7 +116,7 @@ class __FormState extends State<_Form> {
                           passController.text.trim());
 
                       if (registroOk == true) {
-                        // Conectar a socket server y navegar
+                        socketService.connect();
                         Navigator.pushReplacementNamed(context, 'usuarios');
                       } else {
                         mostrarAlerta(
